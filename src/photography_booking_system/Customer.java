@@ -4,8 +4,9 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Customer {
-    Scanner sc = new Scanner(System.in);
-    config conf = new config();
+        Scanner sc = new Scanner(System.in);
+        config conf = new config();
+    
     
     public void CustomerTransactions() {
         int act;
@@ -13,7 +14,7 @@ public class Customer {
         do {
             try {
                 System.out.println("\n-----------------------------------------------");
-                System.out.println("       == Welcome to Customer Section ==");
+                System.out.println("        == WELCOME TO CUSTOMER SECTION ==");
                 System.out.println("-----------------------------------------------");
                 
                 System.out.println("1. Add Customer");
@@ -66,121 +67,136 @@ public class Customer {
     
 
     private void addCustomers() {
-      
-        System.out.print("Enter Name: ");
-        String name = sc.nextLine();
+        String name;
+            while (true) {
+                System.out.print("Enter Name: ");
+                name = sc.nextLine();
+                if (name.trim().isEmpty()) {
+                    System.out.println("Name cannot be empty. Please enter a valid name.\n");
+                } else {
+                    break;
+                }
+            }
 
         String email;
-        while (true) {
-            System.out.print("Enter Email: ");
-            email = sc.nextLine();
-            
-            if (isValidEmail(email)) {
-                break;
-            } else {
-                System.out.println("Invalid email format. Please enter a valid email.\n");
+            while (true) {
+                System.out.print("Enter Email: ");
+                email = sc.nextLine();
+
+                if (isValidEmail(email)) {
+                    break;
+                } else {
+                    System.out.println("Invalid email format. Please enter a valid email.\n");
+                }
             }
-        }
 
         String pnum;
-        while (true) {
-            System.out.print("Enter Phone Number: ");
-            pnum = sc.nextLine();
-            
-            if (isValidPhoneNumber(pnum)) {
-                break;
-            } else {
-                System.out.println("Invalid phone number format. Please enter digits only.\n");
-            }
-        }
+            while (true) {
+                System.out.print("Enter Phone Number: ");
+                pnum = sc.nextLine();
 
-        String sql = "INSERT INTO CUSTOMERS (c_name, c_email, c_pnum) VALUES (?, ?, ?)";   
-        
-        conf.addRecord(sql, name, email, pnum);
+                if (isValidPhoneNumber(pnum)) {
+                    break;
+                } else {
+                    System.out.println("Invalid phone number format. Please enter digits only.\n");
+                }
+            }
+
+            String sql = "INSERT INTO CUSTOMERS (c_name, c_email, c_pnum) VALUES (?, ?, ?)";   
+            conf.addRecord(sql, name, email, pnum);
     }
+    
     
     public void viewCustomers(){
         System.out.println("\n---------------------------------------------------------------------------------------------");
-        System.out.println("                                   == CUSTOMER DETAILS ==             ");
+        System.out.println("                                    == LIST OF CUSTOMERS ==             ");
         
-        String qry = "SELECT * FROM CUSTOMERS";
-        String[] header = {"ID", "Name", "Email", "Contact Number"};
-        String[] column = {"c_id", "c_name", "c_email", "c_pnum"};
+            String qry = "SELECT * FROM CUSTOMERS";
+            String[] header = {"ID", "Name", "Email", "Contact Number"};
+            String[] column = {"c_id", "c_name", "c_email", "c_pnum"};
        
         conf.viewRecords(qry, header, column);
     
     }
     
+    
     private void updateCustomers(){
         System.out.print("Enter ID to Update: ");
         int cid = sc.nextInt();
+        sc.nextLine();
         
-        while(conf.getSingleValue("SELECT c_id FROM CUSTOMERS WHERE c_id = ?",cid)==0){
-            System.out.println("Selected ID doesn't exist! ");
-            System.out.print("Select Customer Id Again: ");
-            cid = sc.nextInt();
-            sc.nextLine();
+            while(conf.getSingleValue("SELECT c_id FROM CUSTOMERS WHERE c_id = ?",cid)==0){
+                System.out.println("Selected ID doesn't exist! ");
+                System.out.print("Select Customer Id Again: ");
+                cid = sc.nextInt();
+                sc.nextLine();
         }
         
-        
-        System.out.print("Enter Name: ");
-        String name = sc.nextLine();
+        String name;
+            while (true) {
+                System.out.print("Enter Name: ");
+                name = sc.nextLine();
+                if (name.trim().isEmpty()) {
+                    System.out.println("Name cannot be empty. Please enter a valid name.\n");
+                } else {
+                    break;
+                }
+            }
 
         String email;
-        while (true) {
-            System.out.print("Enter Email: ");
-            email = sc.nextLine();
-            
-            if (isValidEmail(email)) {
-                break;
-            } else {
-                System.out.println("Invalid email format. Please enter a valid email.\n");
+            while (true) {
+                System.out.print("Enter Email: ");
+                email = sc.nextLine();
+
+                if (isValidEmail(email)) {
+                    break;
+                } else {
+                    System.out.println("Invalid email format. Please enter a valid email.\n");
+                }
             }
-        }
 
         String pnum;
-        while (true) {
-            System.out.print("Enter Phone Number: ");
-            pnum = sc.nextLine();
-            
-            if (isValidPhoneNumber(pnum)) {
-                break;
-            } else {
-                System.out.println("Invalid phone number format. Please enter digits only.\n");
+            while (true) {
+                System.out.print("Enter Phone Number: ");
+                pnum = sc.nextLine();
+
+                if (isValidPhoneNumber(pnum)) {
+                    break;
+                } else {
+                    System.out.println("Invalid phone number format. Please enter digits only.\n");
+                }
             }
-        }
-        
-        
-        
-        String qry = "UPDATE CUSTOMERS SET c_name = ?, c_email = ?, c_pnum = ? WHERE c_id = ?";
-        conf.updateRecord(qry, name, email, pnum, cid);
+       
+                String qry = "UPDATE CUSTOMERS SET c_name = ?, c_email = ?, c_pnum = ? WHERE c_id = ?";
+                conf.updateRecord(qry, name, email, pnum, cid);
     }
+    
     
     private void deleteCustomers(){
         System.out.print("Enter ID to Delete: ");
         int cid = sc.nextInt();
         
-        while(conf.getSingleValue("SELECT c_id FROM CUSTOMERS WHERE c_id = ?",cid)==0){
-            System.out.println("Selected ID doesn't exist! ");
-            System.out.print("Select Customer Id Again: ");
-            cid = sc.nextInt();
-            sc.nextLine();
-        }
+            while(conf.getSingleValue("SELECT c_id FROM CUSTOMERS WHERE c_id = ?",cid)==0){
+                System.out.println("Selected ID doesn't exist! ");
+                System.out.print("Select Customer Id Again: ");
+                cid = sc.nextInt();
+                sc.nextLine();
+            }
         
-        String qry = "DELETE FROM CUSTOMERS WHERE c_id = ?";
-        conf.deleteRecord(qry, cid);
-        
-        
-        
-        
-}
-    
-    
-    private boolean isValidEmail(String email) {
-        return email.contains("@") && email.contains("."); 
-    }
+                String qry = "DELETE FROM CUSTOMERS WHERE c_id = ?";
+                conf.deleteRecord(qry, cid);
 
-    private boolean isValidPhoneNumber(String phoneNumber) {
-        return phoneNumber.matches("\\d+"); 
-    }
+}
+ 
+    
+        private boolean isValidEmail(String email) {
+            return email.contains("@") && email.contains("."); 
+        }
+
+
+        private boolean isValidPhoneNumber(String phoneNumber) {
+            return phoneNumber.matches("\\d+"); 
+        }
+    
+    
 }

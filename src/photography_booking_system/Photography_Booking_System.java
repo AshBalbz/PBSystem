@@ -12,15 +12,16 @@ public class Photography_Booking_System {
         Packages pack = new Packages();
         Booking book = new Booking();
         Photographer photo = new Photographer();
+        Reports rec = new Reports();
         
         
         int op = -1; 
         
         do {
             try {
-                System.out.println("\n------------------------------------------------");
+                System.out.println("\n================================================");
                 System.out.println("     WELCOME TO PHOTOGRAPHY BOOKING SYSTEM      ");
-                System.out.println("------------------------------------------------");
+                System.out.println("================================================");
                 System.out.println("         == Kindly Select an Entity ==         ");
                 System.out.println("------------------------------------------------");
 
@@ -28,7 +29,7 @@ public class Photography_Booking_System {
                 System.out.println("2. PHOTOGRAPHY PACKAGES ");
                 System.out.println("3. BOOKING ");
                 System.out.println("4. PHOTOGRAPHER ");
-                System.out.println("5. PAYMENT ");
+                System.out.println("5. REPORTS ");
                 System.out.println("6. EXIT ");
 
                 System.out.print("\nSelect an Option: ");
@@ -53,7 +54,7 @@ public class Photography_Booking_System {
                         break;
 
                     case 5:
-//                        pay.configPayment();
+                        rec.ReportTransaction();
                         break;
                     
                     case 6:

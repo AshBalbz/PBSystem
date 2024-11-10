@@ -13,7 +13,7 @@ public class Photographer {
         do {
             try {
                 System.out.println("\n-----------------------------------------------");
-                System.out.println("     == Welcome to Photographer Section ==");
+                System.out.println("     == WELCOME TO PHOTOGRAPHER SECTION ==");
                 System.out.println("-----------------------------------------------");
                 
                 System.out.println("1. Add Photographer");
@@ -64,10 +64,18 @@ public class Photographer {
         } while (act != 5);
     }
     
+    
     private void addPhotographers(){
-        
-        System.out.print("Enter Photographer Name: ");
-        String name = sc.nextLine();
+         String name;
+            while (true) {
+                System.out.print("Enter Name: ");
+                name = sc.nextLine();
+                if (name.trim().isEmpty()) {
+                    System.out.println("Name cannot be empty. Please enter a valid name.\n");
+                } else {
+                    break;
+                }
+            }
 
         String exper;
             while (true) {
@@ -84,7 +92,7 @@ public class Photographer {
             while (true) {
                 System.out.print("Enter Specialty: ");
                 sp = sc.nextLine();
-                if (exper.trim().isEmpty()) {
+                if (sp.trim().isEmpty()) {
                     System.out.println("Specialty cannot be empty. Please enter a valid specialty.\n");
                 } else {
                     break;
@@ -92,16 +100,16 @@ public class Photographer {
             }
 
         String con;
-        while (true) {
-            System.out.print("Contact Details: ");
-            con = sc.nextLine();
-            
-            if (isValidContactDetails(con)) {
-                break;
-            } else {
-                System.out.println("Invalid phone number format. Please enter digits only.\n");
+            while (true) {
+                System.out.print("Contact Details: ");
+                con = sc.nextLine();
+
+                if (isValidContactDetails(con)) {
+                    break;
+                } else {
+                    System.out.println("Invalid phone number format. Please enter digits only.\n");
+                }
             }
-        }
         
         String sql = "INSERT INTO PHOTOGRAPHERS (name, experience, specialty, contact_details) VALUES (?, ?, ?, ?)";
         conf.addRecord(sql, name, exper, sp, con);
@@ -109,26 +117,38 @@ public class Photographer {
     
     
     public void viewPhotographers(){
-        String qry = "SELECT * FROM PHOTOGRAPHERS";
-        String[] header = {"ID", "Photographer Name", "Experience", "Specialty", "Contact Details"};
-        String[] column = {"p_id", "name", "experience", "specialty", "contact_details"};
+        System.out.println("--------------------------------------------------------------------------------------------------------------------");
+        System.out.println("| \t\t\t\t\t    == LIST OF PHOTOGRAPHERS == \t\t\t\t\t\t |");
+            String qry = "SELECT * FROM PHOTOGRAPHERS";
+            String[] header = {"ID", "Photographer Name", "Experience", "Specialty", "Contact Details"};
+            String[] column = {"p_id", "name", "experience", "specialty", "contact_details"};
        
         conf.viewRecords(qry, header, column);
     }
     
+    
     private void updatePhotographers(){
         System.out.print("Enter ID to Update: ");
         int pid = sc.nextInt();
+        sc.nextLine();
         
-        while(conf.getSingleValue("SELECT p_id FROM PHOTOGRAPHERS WHERE p_id = ?",pid)==0){
-            System.out.println("Selected ID doesn't exist! ");
-            System.out.print("Select Photographer Id Again: ");
-            pid = sc.nextInt();
-            sc.nextLine();
-        }
+            while(conf.getSingleValue("SELECT p_id FROM PHOTOGRAPHERS WHERE p_id = ?",pid)==0){
+                System.out.println("Selected ID doesn't exist! ");
+                System.out.print("Select Photographer Id Again: ");
+                pid = sc.nextInt();
+                sc.nextLine();
+            }
         
-         System.out.print("Enter Photographer Name: ");
-        String name = sc.nextLine();
+        String name;
+            while (true) {
+                System.out.print("Enter Name: ");
+                name = sc.nextLine();
+                if (name.trim().isEmpty()) {
+                    System.out.println("Name cannot be empty. Please enter a valid name.\n");
+                } else {
+                    break;
+                }
+            }
 
         String exper;
             while (true) {
@@ -145,7 +165,7 @@ public class Photographer {
             while (true) {
                 System.out.print("Enter Specialty: ");
                 sp = sc.nextLine();
-                if (exper.trim().isEmpty()) {
+                if (sp.trim().isEmpty()) {
                     System.out.println("Specialty cannot be empty. Please enter a valid specialty.\n");
                 } else {
                     break;
@@ -153,24 +173,24 @@ public class Photographer {
             }
 
         String con;
-        while (true) {
-            System.out.print("Contact Details: ");
-            con = sc.nextLine();
-            
-            if (isValidContactDetails(con)) {
-                break;
-            } else {
-                System.out.println("Invalid phone number format. Please enter digits only.\n");
+            while (true) {
+                System.out.print("Contact Details: ");
+                con = sc.nextLine();
+
+                if (isValidContactDetails(con)) {
+                    break;
+                } else {
+                    System.out.println("Invalid phone number format. Please enter digits only.\n");
+                }
             }
-        }
         
-        String qry = "UPDATE PHOTOGRAPHERS SET name = ?, experience = ?, specialty = ?, contact_details = ?";
-        conf.updateRecord(qry, name, exper, sp, con);
+        String qry = "UPDATE PHOTOGRAPHERS SET name = ?, experience = ?, specialty = ?, contact_details = ? WHERE p_id = ?";
+        conf.updateRecord(qry, name, exper, sp, con, pid);
         
     }
     
-    private void deletePhotographers(){
     
+    private void deletePhotographers(){
         System.out.print("Enter ID to Delete: ");
         int pid = sc.nextInt();
         
@@ -190,7 +210,4 @@ public class Photographer {
         return contactDetails.matches("\\d+"); 
     }
 
-   
-    
-    
 }
