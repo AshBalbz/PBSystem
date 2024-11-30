@@ -22,6 +22,7 @@ public class Customer {
                 System.out.println("3. Update Customer");
                 System.out.println("4. Delete Customer");
                 System.out.println("5. Back to Main Menu");
+                System.out.println("-----------------------------------------------");
 
                 System.out.print("\nPlease Choose an Option: ");
                 act = sc.nextInt();
@@ -30,7 +31,6 @@ public class Customer {
                 switch (act) {
                     case 1:
                         addCustomers();
-                        viewCustomers();
                         break;
                 
                     case 2:

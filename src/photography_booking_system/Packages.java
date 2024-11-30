@@ -21,6 +21,7 @@ public class Packages {
                 System.out.println("3. Update Packages");
                 System.out.println("4. Delete Packages");
                 System.out.println("5. Back to Main Menu");
+                System.out.println("-------------------------------------------------");
 
                 System.out.print("\nPlease Choose an Option: ");
                 act = sc.nextInt();
@@ -29,8 +30,6 @@ public class Packages {
                 switch (act) {
                     case 1:
                         addPackages(); 
-                        viewPackages();
-
                         break;
                 
                     case 2:

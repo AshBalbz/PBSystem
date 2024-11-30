@@ -21,6 +21,7 @@ public class Photographer {
                 System.out.println("3. Update Photographer");
                 System.out.println("4. Delete Photographer");
                 System.out.println("5. Back to Main Menu");
+                System.out.println("-------------------------------------------------");
 
                 System.out.print("\nPlease Choose an Option: ");
                 act = sc.nextInt();
@@ -29,7 +30,6 @@ public class Photographer {
                 switch (act) {
                     case 1:
                         addPhotographers(); 
-                        viewPhotographers();
                         break;
                 
                     case 2:
@@ -194,14 +194,14 @@ public class Photographer {
         System.out.print("Enter ID to Delete: ");
         int pid = sc.nextInt();
         
-        while(conf.getSingleValue("SELECT c_id FROM PHOTOGRAPHERS WHERE c_id = ?",pid)==0){
+        while(conf.getSingleValue("SELECT p_id FROM PHOTOGRAPHERS WHERE p_id = ?",pid)==0){
             System.out.println("Selected ID doesn't exist! ");
             System.out.print("Select Photographer Id Again: ");
             pid = sc.nextInt();
             sc.nextLine();
         }
         
-        String qry = "DELETE FROM PHOTOGRPAHERS WHERE p_id = ?";
+        String qry = "DELETE FROM PHOTOGRAPHERS WHERE p_id = ?";
         conf.deleteRecord(qry, pid);
         
 }

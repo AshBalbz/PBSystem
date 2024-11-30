@@ -5,7 +5,9 @@ import java.util.Scanner;
 
 public class Photography_Booking_System {
 
+
     public static void main(String[] args) {
+            
         Scanner sc = new Scanner(System.in);
         
         Customer cust = new Customer();
@@ -31,6 +33,7 @@ public class Photography_Booking_System {
                 System.out.println("4. PHOTOGRAPHER ");
                 System.out.println("5. REPORTS ");
                 System.out.println("6. EXIT ");
+                System.out.println("------------------------------------------------");
 
                 System.out.print("\nSelect an Option: ");
                 op = sc.nextInt();
@@ -57,9 +60,7 @@ public class Photography_Booking_System {
                         rec.ReportTransaction();
                         break;
                     
-                    case 6:
-                        System.out.println("Exiting....");
-                        break;
+                     
 
                     default:
                         System.out.println("Invalid Option.");

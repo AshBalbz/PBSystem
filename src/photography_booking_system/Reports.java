@@ -26,6 +26,7 @@ public class Reports {
                 System.out.println("2. Generate Specific Photographer");
                 System.out.println("3. Generate All Booking History");
                 System.out.println("4. Back to Main Menu");
+                System.out.println("-------------------------------------------------");
 
                 System.out.print("\nPlease Choose an Option: ");
                 act = sc.nextInt();
