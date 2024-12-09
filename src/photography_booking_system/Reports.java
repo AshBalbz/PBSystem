@@ -187,7 +187,7 @@ public class Reports {
                 if (photographerResult.next()) {
                     
                     System.out.println("-----------------------------------------------------------------------------------");
-                    System.out.println("|                          PHOTOGRAPHER BOOKING HISTORY                           |");
+                    System.out.println("|                              PHOTOGRAPHER DETAILS                               |");
                     System.out.println("-----------------------------------------------------------------------------------");
 
                    

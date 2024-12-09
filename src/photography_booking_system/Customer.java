@@ -1,15 +1,17 @@
 package photography_booking_system;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Customer {
         Scanner sc = new Scanner(System.in);
         config conf = new config();
-    
+        int act;
     
     public void CustomerTransactions() {
-        int act;
 
         do {
             try {
@@ -119,8 +121,9 @@ public class Customer {
     
     }
     
-    
     private void updateCustomers(){
+                String Query;
+
         System.out.print("Enter ID to Update: ");
         int cid = sc.nextInt();
         sc.nextLine();
@@ -131,46 +134,137 @@ public class Customer {
                 cid = sc.nextInt();
                 sc.nextLine();
         }
+            displaySpecificCustomer(cid);
         
-        String name;
-            while (true) {
-                System.out.print("Enter Name: ");
-                name = sc.nextLine();
-                if (name.trim().isEmpty()) {
-                    System.out.println("Name cannot be empty. Please enter a valid name.\n");
-                } else {
-                    break;
-                }
-            }
-
-        String email;
-            while (true) {
-                System.out.print("Enter Email: ");
-                email = sc.nextLine();
-
-                if (isValidEmail(email)) {
-                    break;
-                } else {
-                    System.out.println("Invalid email format. Please enter a valid email.\n");
-                }
-            }
-
-        String pnum;
-            while (true) {
-                System.out.print("Enter Phone Number: ");
-                pnum = sc.nextLine();
-
-                if (isValidPhoneNumber(pnum)) {
-                    break;
-                } else {
-                    System.out.println("Invalid phone number format. Please enter digits only.\n");
-                }
-            }
-       
-                String qry = "UPDATE CUSTOMERS SET c_name = ?, c_email = ?, c_pnum = ? WHERE c_id = ?";
-                conf.updateRecord(qry, name, email, pnum, cid);
-    }
     
+             char act;
+            do {
+                try {
+                    System.out.println("\n-----------------------------------------------");
+                    System.out.println("  == SELECT AN OPTION YOU WANT TO UPDATE ==");
+                    System.out.println("-----------------------------------------------");
+
+                    System.out.println("A. Customer Name");
+                    System.out.println("B. Email");
+                    System.out.println("C. Phone number ");
+                    System.out.println("D. Back");
+                    System.out.println("-----------------------------------------------"); 
+
+                    System.out.print("\nPlease Choose an Option: ");
+                    act = sc.nextLine().trim().toUpperCase().charAt(0);;
+
+
+                    switch (act) {
+                        case 'A':
+                            String name;
+                                while (true) {
+                                    System.out.print("Enter New Name: ");
+                                    name = sc.nextLine();
+                                    if (name.trim().isEmpty()) {
+                                        System.out.println("Name cannot be empty. Please enter a valid name.\n");
+                                    } else {
+                                        break;
+                                    }
+                                }
+                            Query = "UPDATE CUSTOMERS SET c_name = ? WHERE c_id = ?";
+                            conf.updateRecord(Query, name, cid);
+                            displaySpecificCustomer(cid);
+                            break;
+
+                        case 'B':
+                             String email;
+                                while (true) {
+                                    System.out.print("Enter Email: ");
+                                    email = sc.nextLine();
+
+                                    if (isValidEmail(email)) {
+                                        break;
+                                    } else {
+                                        System.out.println("Invalid email format. Please enter a valid email.\n");
+                                    }
+                                }
+                            Query = "UPDATE CUSTOMERS SET c_email = ? WHERE c_id = ?";
+                            conf.updateRecord(Query, email, cid);
+                            displaySpecificCustomer(cid);
+                            break;
+
+                        case 'C':
+                            String pnum;
+                                while (true) {
+                                    System.out.print("Enter Phone Number: ");
+                                    pnum = sc.nextLine();
+
+                                    if (isValidPhoneNumber(pnum)) {
+                                        break;
+                                    } else {
+                                        System.out.println("Invalid phone number format. Please enter digits only.\n");
+                                    }
+                                }
+                            Query = "UPDATE CUSTOMERS SET c_pnum = ? WHERE c_id = ?";
+                            conf.updateRecord(Query, pnum, cid);
+                            displaySpecificCustomer(cid);
+                            break;
+                            
+                        case 'D':
+                            System.out.println("Going back....");
+                            break;
+
+                        default:
+                            System.out.println("Invalid Option.");
+                    }
+
+
+                    } catch (InputMismatchException e) {
+                                System.out.println("Invalid input. Please enter valid data.");
+                                sc.nextLine();
+                                }
+                            } while (true);
+                        }
+        
+
+
+
+private void displaySpecificCustomer(int cid) {
+        String query = """
+            SELECT 
+                c.c_id AS CustomerID, 
+                c.c_name AS CustomerName,
+                c.c_email AS CustomerEmail,
+                c.c_pnum AS CustomerPhoneNumber
+            FROM CUSTOMERS c
+            WHERE c.c_id = ?
+        """;
+
+        try (java.sql.Connection conn = conf.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, cid);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                // Table Header
+                System.out.println("==============================================================================");
+                System.out.printf("| %-15s | %-15s | %-20s | %-15s |\n", 
+                    "Customer ID", "Name", "Email", "Phone Number");
+                System.out.println("==============================================================================");
+
+                // Booking Details
+                System.out.printf("| %-15s | %-15s | %-20s | %-15s |\n", 
+                    rs.getInt("CustomerID"), 
+                    rs.getString("CustomerName"),
+                    rs.getString("CustomerEmail"), 
+                    rs.getString("CustomerPhoneNumber")); 
+                System.out.println("------------------------------------------------------------------------------");
+            } else {
+                System.out.println("No details found for the selected booking.");
+            }
+
+
+        } catch (SQLException e) {
+            System.out.println("Error fetching booking details: " + e.getMessage());
+        }
+}
+
+
     
     private void deleteCustomers(){
         System.out.print("Enter ID to Delete: ");

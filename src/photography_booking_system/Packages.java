@@ -1,14 +1,17 @@
 package photography_booking_system;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Packages {
     private Scanner sc = new Scanner(System.in);
     config conf = new config();
-    
+    int act;
+
     public void PackageTransactions() {
-        int act;
 
         do {
             try {
@@ -39,13 +42,11 @@ public class Packages {
                     case 3:
                         viewPackages();
                         updatePackages();
-                        viewPackages();
                         break;
             
                     case 4:
                         viewPackages();
                         deletePackages(); 
-                        viewPackages();
                         break;
                 
                     case 5:
@@ -124,7 +125,7 @@ public class Packages {
     
     public void viewPackages(){
         System.out.println("--------------------------------------------------------------------------------------------------------------------");
-        System.out.println("| \t\t\t\t\t       == PACKAGES LIST == \t\t\t\t\t\t |");
+        System.out.println("| \t\t\t\t\t       == PACKAGES LIST == \t\t\t\t\t\t     |");
         
             String qry = "SELECT * FROM PACKAGES";
             String[] header = {"ID", "Package Name", "Duration [in hours]", "Amount", "Included Services" };
@@ -135,6 +136,8 @@ public class Packages {
     
     
     private void updatePackages(){
+       String Query;
+       
        System.out.print("Enter ID to Update: ");
        int id = sc.nextInt();
        sc.nextLine();
@@ -146,59 +149,155 @@ public class Packages {
                 sc.nextLine(); 
             }
 
-       String name;
-            while (true) {
-                System.out.print("Enter Package Name: ");
-                name = sc.nextLine();
-                if (name.trim().isEmpty()) {
-                    System.out.println("Package Name cannot be empty. Please enter a valid name.\n");
-                } else {
-                    break;
-                }
-            }
+            char act;
+                do {
+                    try {
+                        System.out.println("\n-----------------------------------------------");
+                        System.out.println("  == SELECT AN OPTION YOU WANT TO UPDATE ==");
+                        System.out.println("-----------------------------------------------");
 
-       String dt;
-            while (true) {
-                System.out.print("Enter Duration: ");
-                dt = sc.nextLine();
-                if (dt.trim().isEmpty()) {
-                    System.out.println("Duration cannot be empty. Please enter a valid duration.\n");
-                } else {
-                    break;
-                }
-            }
+                        System.out.println("A. Package Name");
+                        System.out.println("B. Duration");
+                        System.out.println("C. Amount ");
+                        System.out.println("D. Services");
+                        System.out.println("E. Back");
+                        System.out.println("-----------------------------------------------");
 
-       double amount = 0;
-            while (true) {
-                System.out.print("Enter Price: ");
-                try {
-                    amount = sc.nextDouble();
-                    sc.nextLine(); 
-                    if (amount < 0) {
-                        System.out.println("Price cannot be negative. Please enter a valid price.\n");
-                    } else {
-                        break;
+                        System.out.print("\nPlease Choose an Option: ");
+                        act = sc.nextLine().trim().toUpperCase().charAt(0);
+
+                        switch (act) {
+                            case 'A': {
+                                String name;
+                                while (true) {
+                                    System.out.print("Enter Package Name: ");
+                                    name = sc.nextLine();
+                                    if (name.trim().isEmpty()) {
+                                        System.out.println("Package Name cannot be empty. Please enter a valid name.\n");
+                                    } else {
+                                        break;
+                                    }
+                                }
+                                String query = "UPDATE PACKAGES SET pname = ? WHERE pp_id = ?";
+                                conf.updateRecord(query, name, id);
+                                displaySpecificPackage(id);
+                                break;
+                            }
+
+                            case 'B': {
+                                String dt;
+                                while (true) {
+                                    System.out.print("Enter Duration: ");
+                                    dt = sc.nextLine();
+                                    if (dt.trim().isEmpty()) {
+                                        System.out.println("Duration cannot be empty. Please enter a valid duration.\n");
+                                    } else {
+                                        break;
+                                    }
+                                }
+                                String query = "UPDATE PACKAGES SET duration = ? WHERE pp_id = ?";
+                                conf.updateRecord(query, dt, id);
+                                displaySpecificPackage(id);
+                                break;
+                            }
+
+                            case 'C': {
+                                double amount = 0;
+                                while (true) {
+                                    System.out.print("Enter Price: ");
+                                    try {
+                                        amount = sc.nextDouble();
+                                        sc.nextLine();
+                                        if (amount < 0) {
+                                            System.out.println("Price cannot be negative. Please enter a valid price.\n");
+                                        } else {
+                                            break;
+                                        }
+                                    } catch (InputMismatchException e) {
+                                        System.out.println("Invalid input. Please enter a valid number for Price.\n");
+                                        sc.nextLine();
+                                    }
+                                }
+                                String query = "UPDATE PACKAGES SET amount = ? WHERE pp_id = ?";
+                                conf.updateRecord(query, amount, id);
+                                displaySpecificPackage(id);
+                                break;
+                            }
+
+                            case 'D': {
+                                String services;
+                                while (true) {
+                                    System.out.print("Enter Services Included: ");
+                                    services = sc.nextLine();
+                                    if (services.trim().isEmpty()) {
+                                        System.out.println("Services Included cannot be empty. Please enter valid services.\n");
+                                    } else {
+                                        break;
+                                    }
+                                }
+                                String query = "UPDATE PACKAGES SET service = ? WHERE pp_id = ?";
+                                conf.updateRecord(query, services, id);
+                                displaySpecificPackage(id);
+                                break;
+                            }
+
+                            case 'E': {
+                                System.out.println("Going back to the packages main menu...");
+                                return; 
+                            }
+
+                            default: {
+                                System.out.println("Invalid Option. Please select a valid option.");
+                            }
+                        }
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid input. Please enter valid data.");
+                        sc.nextLine(); 
                     }
-                } catch (InputMismatchException e) {
-                    System.out.println("Invalid input. Please enter a valid number for Price.\n");
-                    sc.nextLine(); 
+                } while (true);
                 }
-            }
 
-       String services;
-            while (true) {
-                System.out.print("Enter Services Included: ");
-                services = sc.nextLine();
-                if (services.trim().isEmpty()) {
-                    System.out.println("Services Included cannot be empty. Please enter valid services.\n");
+
+    private void displaySpecificPackage(int id) {
+            String query = """
+                SELECT 
+                    pc.pp_id AS PackageID, 
+                    pc.pname AS PackageName,
+                    pc.duration AS PackageDur,
+                    pc.amount AS PackageAmt,
+                    pc.service AS PackageServ
+                FROM PACKAGES pc
+                WHERE pc.pp_id = ?
+            """;
+
+            try (java.sql.Connection conn = conf.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setInt(1, id);
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    // Table Header
+                    System.out.println("================================================================================================");
+                    System.out.printf("| %-15s | %-15s | %-15s | %-15s | %20s |\n", 
+                        "Package ID", "Package Name", "Duration", "Amount","Services");
+                    System.out.println("================================================================================================");
+
+                    System.out.printf("| %-15s | %-15s | %-15s | %-15s | %20s |\n", 
+                        rs.getInt("PackageID"), 
+                        rs.getString("PackageName"),
+                        rs.getString("PackageDur"), 
+                        rs.getString("PackageAmt"),
+                        rs.getString("PackageServ")); 
+                    System.out.println("------------------------------------------------------------------------------------------------");
                 } else {
-                    break;
+                    System.out.println("No details found for the selected booking.");
                 }
-            }
 
-                String qry = "UPDATE PACKAGES SET pname = ?, duration = ?, amount = ?, service = ? WHERE pp_id = ?";
-                conf.updateRecord(qry, name, dt, amount, services, id);
-   }
+
+            } catch (SQLException e) {
+                System.out.println("Error fetching booking details: " + e.getMessage());
+            }
+       }
 
     
     private void deletePackages(){

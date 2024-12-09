@@ -1,14 +1,17 @@
 package photography_booking_system;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Photographer {
      private Scanner sc = new Scanner(System.in);
      config conf = new config();
-    
+     int act;
+
     public void PhotographerTransactions() {
-        int act;
 
         do {
             try {
@@ -118,7 +121,7 @@ public class Photographer {
     
     public void viewPhotographers(){
         System.out.println("--------------------------------------------------------------------------------------------------------------------");
-        System.out.println("| \t\t\t\t\t    == LIST OF PHOTOGRAPHERS == \t\t\t\t\t\t |");
+        System.out.println("| \t\t\t\t\t    == LIST OF PHOTOGRAPHERS ==    \t\t\t\t\t     |");
             String qry = "SELECT * FROM PHOTOGRAPHERS";
             String[] header = {"ID", "Photographer Name", "Experience", "Specialty", "Contact Details"};
             String[] column = {"p_id", "name", "experience", "specialty", "contact_details"};
@@ -128,6 +131,8 @@ public class Photographer {
     
     
     private void updatePhotographers(){
+        String Query;
+        
         System.out.print("Enter ID to Update: ");
         int pid = sc.nextInt();
         sc.nextLine();
@@ -138,56 +143,150 @@ public class Photographer {
                 pid = sc.nextInt();
                 sc.nextLine();
             }
-        
-        String name;
-            while (true) {
-                System.out.print("Enter Name: ");
-                name = sc.nextLine();
-                if (name.trim().isEmpty()) {
-                    System.out.println("Name cannot be empty. Please enter a valid name.\n");
-                } else {
-                    break;
-                }
-            }
-
-        String exper;
-            while (true) {
-                System.out.print("Enter Experience: ");
-                exper = sc.nextLine();
-                if (exper.trim().isEmpty()) {
-                    System.out.println("Experience cannot be empty. Please enter a valid experience.\n");
-                } else {
-                    break;
-                }
-            }
             
-        String sp;
-            while (true) {
-                System.out.print("Enter Specialty: ");
-                sp = sc.nextLine();
-                if (sp.trim().isEmpty()) {
-                    System.out.println("Specialty cannot be empty. Please enter a valid specialty.\n");
-                } else {
-                    break;
+      char act;  
+      do {
+                try {
+                    System.out.println("\n-----------------------------------------------");
+                    System.out.println("  == SELECT AN OPTION YOU WANT TO UPDATE ==");
+                    System.out.println("-----------------------------------------------");
+
+                    System.out.println("A. Photographer Name");
+                    System.out.println("B. Experience");
+                    System.out.println("C. Specialty ");
+                    System.out.println("D. Contact Number ");
+                    System.out.println("E. Back");
+                    System.out.println("-----------------------------------------------"); 
+
+                    System.out.print("\nPlease Choose an Option: ");
+                    act = sc.nextLine().trim().toUpperCase().charAt(0);
+
+
+                    switch (act) {
+                        case 'A':
+                            String name;
+                                while (true) {
+                                    System.out.print("Enter New Name: ");
+                                    name = sc.nextLine();
+                                    if (name.trim().isEmpty()) {
+                                        System.out.println("Name cannot be empty. Please enter a valid name.\n");
+                                    } else {
+                                        break;
+                                    }
+                                }
+                            Query = "UPDATE PHOTOGRAPHERS SET name = ? WHERE p_id = ?";
+                            conf.updateRecord(Query, name, pid);
+                            displaySpecificPhotographer(pid);
+                            break;
+
+                        case 'B':
+                             String exper;
+                                while (true) {
+                                    System.out.print("Enter Experience: ");
+                                    exper = sc.nextLine();
+                                    if (exper.trim().isEmpty()) {
+                                        System.out.println("Experience cannot be empty. Please enter a valid experience.\n");
+                                    } else {
+                                        break;
+                                    }
+                                }
+                            Query = "UPDATE PHOTOGRAPHERS SET experience = ? WHERE p_id = ?";
+                            conf.updateRecord(Query, exper, pid);
+                            displaySpecificPhotographer(pid);
+                            break;
+
+                        case 'C':
+                            String sp;
+                                while (true) {
+                                    System.out.print("Enter Specialty: ");
+                                    sp = sc.nextLine();
+                                    if (sp.trim().isEmpty()) {
+                                        System.out.println("Specialty cannot be empty. Please enter a valid specialty.\n");
+                                    } else {
+                                        break;
+                                    }
+                                }
+                            Query = "UPDATE PHOTOGRAPHERS SET specialty = ? WHERE p_id = ?";
+                            conf.updateRecord(Query, sp, pid);
+                            displaySpecificPhotographer(pid);
+                            break;
+                        
+                        case 'D':
+                            String con;
+                               while (true) {
+                                   System.out.print("Contact Details: ");
+                                   con = sc.nextLine();
+
+                                   if (isValidContactDetails(con)) {
+                                       break;
+                                   } else {
+                                       System.out.println("Invalid phone number format. Please enter digits only.\n");
+                                   }
+                               }
+                            Query = "UPDATE PHOTOGRAPHERS SET contact_details = ? WHERE p_id = ?";
+                            conf.updateRecord(Query, con, pid);
+                            displaySpecificPhotographer(pid);
+                            break;
+
+                        case 'E':
+                            System.out.println("Going back to the photographer main menu.");
+                            return;
+
+                        default: {
+                                System.out.println("Invalid Option. Please select a valid option.");
+                            }
+                        }
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid input. Please enter valid data.");
+                        sc.nextLine(); 
+                    }
+                } while (true);
                 }
+
+
+
+
+private void displaySpecificPhotographer(int pid) {
+        String query = """
+            SELECT 
+                p.p_id AS PhotographerID, 
+                p.name AS PhotographerName,
+                p.experience AS PhotographerExper,
+                p.specialty AS PhotographerSpec,
+                p.contact_details AS PhotographerContact
+            FROM PHOTOGRAPHERS p
+            WHERE p.p_id = ?
+        """;
+
+        try (java.sql.Connection conn = conf.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, pid);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                // Table Header
+                System.out.println("================================================================================================");
+                System.out.printf("| %-15s | %-15s | %-15s | %-20s | %15s |\n", 
+                    "Photographer ID", "Name", "Experience", "Specialty", "Contact Details");
+                System.out.println("================================================================================================");
+
+                System.out.printf("| %-15s | %-15s | %-15s | %-20s | %15s |\n", 
+                    rs.getInt("PhotographerID"), 
+                    rs.getString("PhotographerName"),
+                    rs.getString("PhotographerExper"), 
+                    rs.getString("PhotographerSpec"),
+                    rs.getString("PhotographerContact")); 
+                System.out.println("------------------------------------------------------------------------------------------------");
+            } else {
+                System.out.println("No details found for the selected booking.");
             }
 
-        String con;
-            while (true) {
-                System.out.print("Contact Details: ");
-                con = sc.nextLine();
 
-                if (isValidContactDetails(con)) {
-                    break;
-                } else {
-                    System.out.println("Invalid phone number format. Please enter digits only.\n");
-                }
-            }
-        
-        String qry = "UPDATE PHOTOGRAPHERS SET name = ?, experience = ?, specialty = ?, contact_details = ? WHERE p_id = ?";
-        conf.updateRecord(qry, name, exper, sp, con, pid);
-        
-    }
+        } catch (SQLException e) {
+            System.out.println("Error fetching booking details: " + e.getMessage());
+        }
+}
+
     
     
     private void deletePhotographers(){

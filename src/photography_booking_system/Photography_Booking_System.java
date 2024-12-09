@@ -60,7 +60,9 @@ public class Photography_Booking_System {
                         rec.ReportTransaction();
                         break;
                     
-                     
+                    case 6:
+                        System.out.println("Exiting...");
+                        return;
 
                     default:
                         System.out.println("Invalid Option.");
